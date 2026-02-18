@@ -1,2 +1,0 @@
-[console_scripts]
-k8s-ai = k8s_ai.cli:app
