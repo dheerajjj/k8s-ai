@@ -1,56 +1,83 @@
 # k8s-ai
 
-`k8s-ai` is a Python CLI for Kubernetes log triage. It reads pod logs via `kubectl` and provides:
-- likely root cause
-- confidence level
-- suggested remediation steps
-- helpful follow-up `kubectl` commands
+A Python CLI for Kubernetes pod failure triage using AI-powered log analysis.
 
-Designed for DevOps engineers, SREs, platform teams, and Kubernetes developers.
+## Features
 
-## Install
+- Reads pod logs directly through your local `kubectl` context
+- Uses OpenAI Python SDK v1.x for log analysis
+- Returns likely root cause, confidence level, and remediation guidance
+- Supports `--mock`, `--previous`, `--container`, and `--timeout`
+
+## Installation
+
 ```bash
 pip install k8s-ai-cli
 ```
 
 ## Quick Start
-```bash
-# help
-k8s-ai --help
 
-# analyze a pod
-k8s-ai analyze --pod my-pod-abc123 --namespace production
+```bash
+k8s-ai default my-pod
+k8s-ai default my-pod --mock
+k8s-ai default my-pod --previous
+k8s-ai default my-pod --container app
 ```
 
-## Mock Example (No Cluster Required)
+## Mock Example
+
 ```bash
-k8s-ai analyze --mock
+k8s-ai default my-pod --mock
 ```
 
-## Real Cluster Examples
+## Real Cluster Example
+
 ```bash
-# current logs
-k8s-ai analyze --pod checkout-7f9d8c6f95-2kq9m --namespace payments
+# Current pod logs
+k8s-ai default my-pod
 
-# previous logs (useful for CrashLoopBackOff)
-k8s-ai analyze --pod api-6b8f74d9f7-ptc2z --namespace backend --previous
+# Previous logs (useful for CrashLoopBackOff)
+k8s-ai default my-pod --previous
 
-# specific container in a multi-container pod
-k8s-ai analyze --pod worker-5c7bbf6d8d-v8l2r --namespace jobs --container processor
+# Target a specific container
+k8s-ai default my-pod --container app
 ```
+
+## Environment Variables
+
+`k8s-ai` requires an OpenAI API key.
+
+Linux/macOS:
+
+```bash
+export OPENAI_API_KEY="your_api_key_here"
+```
+
+Windows PowerShell:
+
+```powershell
+$env:OPENAI_API_KEY="your_api_key_here"
+```
+
+## How It Works
+
+1. Collects logs for the target pod using `kubectl`.
+2. Sends relevant log context to an OpenAI-compatible model (OpenAI SDK v1.x).
+3. Produces structured output with probable cause, confidence, and remediation steps.
 
 ## Safety
-`k8s-ai` runs locally and uses your local `kubectl` context. It does not store logs by default.
 
-## Features
-- AI-assisted root-cause analysis from pod logs
-- Confidence scoring for diagnosis quality
-- Actionable remediation guidance
-- Suggested `kubectl` follow-up commands
-- `--mock` mode for offline testing
-- `--previous` support for restarted containers
-- `--container` selection for multi-container pods
+- Runs locally on your machine.
+- Uses your current `kubectl` permissions and context.
+- Does not persist collected pod logs by default.
+
+## Roadmap
+
+- Broader failure-pattern coverage for common Kubernetes workloads
+- Optional structured output modes for CI and automation
+- Additional debugging context integration (events/describe)
 
 ## License
+
 MIT
 
