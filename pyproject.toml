@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "k8s-ai-cli"
-version = "0.1.4"
+version = "0.1.5"
 description = "CLI that explains Kubernetes pod failures from logs using AI. Works locally with kubectl."
 readme = "README.md"
 requires-python = ">=3.10"
